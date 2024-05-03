@@ -7,7 +7,7 @@ The progran can split and merge files back togeter
 
 ## Requirements
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Install these pip modules
 
 ```bash
 pip install dotenv
