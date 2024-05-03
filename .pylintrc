@@ -1,0 +1,6 @@
+[MAIN]
+max-line-length=140
+[MASTER]
+disable=C0114, C0115, C0116, R0903, W0640, W0702, C0301, C0103
+max-line-length=140
+
