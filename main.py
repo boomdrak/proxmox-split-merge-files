@@ -43,7 +43,7 @@ func.log.do("All command line params received")
 # PRUNE / DELETE / SPLIT
 # python3 /mnt/pve/hddstorage/backup-system/main.py --action=split --directory=/mnt/pve/hddstorage/dump --fileType=.lzo --minFileSize=1000000000 --numKeepXBackups=1 --backupPartSize=1000000000
 
-send_msg_to_ntfy("Booting application backup-system - DOCKER.BOOMNET.BOMES")
+# send_msg_to_ntfy("Booting application backup-system - DOCKER.BOOMNET.BOMES")
 ACTION=args.action
 
 if ACTION == "merge":
@@ -107,6 +107,6 @@ for split_backup_server in list_servers:
                 func.log.do("Deleted file that has been split ERROR : " + str(backup_set_to_split['file_name']), func.log.Level.DEBUG)
             #exit(1)
 
-send_msg_to_ntfy("Exiting application with success backup-system - DOCKER.BOOMNET.BOMES")
+# send_msg_to_ntfy("Exiting application with success backup-system - DOCKER.BOOMNET.BOMES")
 
 func.log.do("Exiting application with success", func.log.Level.SUCCESS)
