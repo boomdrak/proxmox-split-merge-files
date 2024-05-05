@@ -2,27 +2,23 @@ import argparse
 import sys
 import os
 from typing import cast
-from dotenv import load_dotenv
+from dotenv import load_dotenv 
 import func.log
 from classes.dir_content import DirContent
+from func.file_search import find_and_delete_files
 from classes.server import Server
 from help.array_tool import get_object_from_array_by_value
 from func.file_stich import file_split, file_stitch
 from func.delete import silentremove
 from func.ntfy import send_msg_to_ntfy
-## INSTALL MODULES
-
-# pip install loguru
-# pip install python-dotenv
-# pip install requests
 
 func.log.do("Booting application", func.log.Level.SUCCESS)
-
 load_dotenv()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--directory', dest='directory', type=str, help='Directory to search')
 parser.add_argument('--action', dest='action', type=str, help='split og merge files', required=True)
+parser.add_argument('--deletePartFiles', dest='deletePartFiles', type=bool, help='Delete old .prt backups')
 parser.add_argument('--filePathToMerge', dest='filePathToMerge', type=str, help='Path of file to merge into one file')
 parser.add_argument('--filePathToMergeOutput', dest='filePathToMergeOutput', type=str, help='Merge output filepath')
 parser.add_argument('--fileType', dest='fileType', type=str, help='Search for specific filetype .lzo')
@@ -65,16 +61,12 @@ for file in o_dir_content.get_values():
     if o_current_server is None:
         o_new_server = Server(server_id)
         o_new_server.set_server_id(server_id)
-        # o_new_server.add_backup_set_count(1)
         o_new_server.set_keep_num_backups(KEEP_BACKUPS)
         o_new_server.add_backup_set(file.date_created, file.file_path)
         list_servers.append(o_new_server)
         continue
 
-    # o_current_server.add_backup_set_count(1)
     o_current_server.add_backup_set(file.date_created, file.file_path)
-
-    # print(file.name + ' size ' + file.size_human + ' date changed ' + str(file.date_created))
 
 ## DELETE UNWANTED BACKUPS
 for backup_del_server in list_servers:
@@ -86,6 +78,8 @@ for backup_del_server in list_servers:
         o_server.set_new_backup_set(lst_backups_to_keep)
         for backup_set_to_delete in lst_backups_to_del:
             if silentremove(backup_set_to_delete['file_name']):
+                ## DELETE OLD .prt files that we dont need anymore
+                find_and_delete_files(args.directory, [backup_set_to_delete['file_name'] + '*.prt'], KEEP_BACKUPS)
                 func.log.do("Deleted file: " + str(backup_set_to_delete['file_name']))
             else:
                 func.log.do("Deleting file ERROR : " + str(backup_set_to_delete['file_name']), func.log.Level.DEBUG)
@@ -108,5 +102,4 @@ for split_backup_server in list_servers:
             #exit(1)
 
 # send_msg_to_ntfy("Exiting application with success backup-system - DOCKER.BOOMNET.BOMES")
-
 func.log.do("Exiting application with success", func.log.Level.SUCCESS)

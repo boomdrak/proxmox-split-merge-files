@@ -10,11 +10,11 @@ The progran can split and merge files back togeter
 Install these pip modules
 
 ```bash
-pip install dotenv
+pip install loguru
+pip install python-dotenv
 pip install requests
 pip install argparse
 pip install typing
-pip install loguru
 ```
 
 ## Usage
